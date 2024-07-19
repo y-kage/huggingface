@@ -7,7 +7,7 @@ from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForDepthEstimation
 
 
-def main(image):
+def main(image, save_path):
 
     image_processor = AutoImageProcessor.from_pretrained(
         "LiheYoung/depth-anything-small-hf"
@@ -35,7 +35,7 @@ def main(image):
     output = prediction.squeeze().cpu().numpy()
     formatted = (output * 255 / np.max(output)).astype("uint8")
     depth = Image.fromarray(formatted)
-    depth.save("../results/depth.png")
+    depth.save(save_path)
     return depth
 
 
@@ -47,6 +47,12 @@ if __name__ == "__main__":
 
     parser = parser.parser()
     args = parser.parse_args()
-    raw_image = Image.open(args.image_path)
+    image_path = args.image_path
+    save_path = args.save_path
+    if not args.image_path:
+        image_path = "../DATA/cat.png"
+    if not args.save_path:
+        save_path = "../results/depth_anything.png"
 
-    main(raw_image)
+    image = Image.open(image_path)
+    main(image, save_path=save_path)

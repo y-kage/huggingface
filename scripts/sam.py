@@ -294,16 +294,30 @@ if __name__ == "__main__":
 
     parser = parser.parser()
     args = parser.parse_args()
-    raw_image = Image.open(args.image_path)
+    image_path = args.image_path
+    result_image_path = args.save_path
     input_points = args.points_prompt
     input_boxes = args.boxes_prompt
-    text = args.text_prompt
+    input_labels = args.labels_prompt
+    input_text = args.text_prompt
 
+    if not image_path:
+        image_path = "../DATA/car.png"
+    if not input_points:
+        input_points = [[[850, 1100], [2250, 1000]]]
+    if not input_boxes:
+        input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
+    if not input_text:
+        input_text = "a cat. a remote control."
+    if not args.save_path:
+        result_image_path = "../results/sam.png"
+
+    raw_image = Image.open(image_path)
     inputs = processor(raw_image, return_tensors="pt").to(device)
     image_embeddings = model.get_image_embeddings(inputs["pixel_values"])
 
     prompt_image_path = "../results/prompt.png"
-    result_image_path = "../results/segment.png"
+    # result_image_path = "../results/segment.png"
 
     # input_points = [[[550, 600], [2100, 1000]]]
     # give_points(raw_image, input_points, result_image_path=result_image_path)
@@ -350,7 +364,9 @@ if __name__ == "__main__":
     # )
 
     # text = "door."
-    bbox = bbox_detecter.main(image=raw_image, text=text)
+    bbox = bbox_detecter.main(
+        image=raw_image, text=input_text, save_path="../results/sam_bbox_detect.png"
+    )
     if len(bbox["labels"]) == 0:
         print("No bbox")
     else:

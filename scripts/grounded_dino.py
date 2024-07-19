@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
 
-def main(image, text):
+def main(image, text, save_path):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model_id = "IDEA-Research/grounding-dino-tiny"
 
@@ -25,12 +25,12 @@ def main(image, text):
         text_threshold=0.3,
         target_sizes=[image.size[::-1]],
     )[0]
-    vis_bbox(image, results)
+    vis_bbox(image, results, save_path)
     # print(results)
     return results
 
 
-def vis_bbox(image, results):
+def vis_bbox(image, results, save_path):
     if results:
         for i in range(results["scores"].shape[0]):
             _bbox = results["boxes"][i]
@@ -47,20 +47,22 @@ def vis_bbox(image, results):
             )
             draw.polygon(bbox, outline=color, width=2)
 
-        output_path = "../results/test_bbox.jpg"
-        image.save(output_path)
+        image.save(save_path)
 
 
 if __name__ == "__main__":
-    image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(image_url, stream=True).raw)
-    # Check for cats and remote controls
-    text = "a cat. a remote control."
     parser = parser.parser()
     args = parser.parse_args()
-    if args.image_path:
-        image = Image.open(args.image_path)
-    if args.text_prompt:
-        text = args.text_prompt
+    image_path = args.image_path
+    text = args.text_prompt
+    save_path = args.save_path
+    if not args.image_path:
+        image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+        image_path = requests.get(image_url, stream=True).raw
+    if not args.text_prompt:
+        text = "a cat. a remote control."
+    if not args.save_path:
+        save_path = "../results/grounded_dino.jpg"
 
-    main(image=image, text=text)
+    image = Image.open(image_path)
+    main(image=image, text=text, save_path=save_path)
