@@ -1,3 +1,4 @@
+import parser
 import random
 
 import requests
@@ -55,4 +56,11 @@ if __name__ == "__main__":
     image = Image.open(requests.get(image_url, stream=True).raw)
     # Check for cats and remote controls
     text = "a cat. a remote control."
+    parser = parser.parser()
+    args = parser.parse_args()
+    if args.image_path:
+        image = Image.open(args.image_path)
+    if args.text_prompt:
+        text = args.text_prompt
+
     main(image=image, text=text)

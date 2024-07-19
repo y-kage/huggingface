@@ -1,5 +1,5 @@
-import argparse
 import os
+import parser
 
 import grounded_dino as bbox_detecter
 import matplotlib.pyplot as plt
@@ -8,27 +8,6 @@ import requests
 import torch
 from PIL import Image
 from transformers import SamModel, SamProcessor
-
-
-def parser():
-    parser = argparse.ArgumentParser(
-        description="Process some inputs for image and prompt handling."
-    )
-
-    parser.add_argument(
-        "--image_path", type=str, required=False, help="Path to the image file."
-    )
-    parser.add_argument(
-        "--text_prompt", type=str, required=False, help="Text prompt for the image."
-    )
-    parser.add_argument(
-        "--points_prompt", type=str, required=False, help="Points prompt for the image."
-    )
-    parser.add_argument(
-        "--boxes_prompt", type=str, required=False, help="Boxes prompt for the image."
-    )
-
-    return parser
 
 
 def show_mask(mask, ax, random_color=False):
@@ -306,17 +285,19 @@ if __name__ == "__main__":
     model = SamModel.from_pretrained("facebook/sam-vit-huge").to(device)
     processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
 
-    img_url = (
-        "https://huggingface.co/ybelkada/segment-anything/resolve/main/assets/car.png"
-    )
-    # img_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    raw_image = Image.open(requests.get(img_url, stream=True).raw).convert("RGB")
-    raw_image.save("../DATA/car.png")
+    # img_url = (
+    #     "https://huggingface.co/ybelkada/segment-anything/resolve/main/assets/car.png"
+    # )
+    # # img_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert("RGB")
+    # raw_image.save("../DATA/car.png")
 
-    parser = parser()
+    parser = parser.parser()
     args = parser.parse_args()
-    if args.image_path:
-        raw_image = Image.open(args.image_path)
+    raw_image = Image.open(args.image_path)
+    input_points = args.points_prompt
+    input_boxes = args.boxes_prompt
+    text = args.text_prompt
 
     inputs = processor(raw_image, return_tensors="pt").to(device)
     image_embeddings = model.get_image_embeddings(inputs["pixel_values"])
@@ -368,7 +349,7 @@ if __name__ == "__main__":
     #     prompt_image_path=prompt_image_path,
     # )
 
-    text = "door."
+    # text = "door."
     bbox = bbox_detecter.main(image=raw_image, text=text)
     if len(bbox["labels"]) == 0:
         print("No bbox")
