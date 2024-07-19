@@ -50,3 +50,4 @@ __pycache__
 
 # Exception # Put ! on the start
 ######################
+!/results/.gitkeep
