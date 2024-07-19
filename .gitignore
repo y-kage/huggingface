@@ -43,11 +43,10 @@ __pycache__
 
 # Directory # Put / on the start and end
 ######################
-/DATA/*
-/results/*
 
 # File # Put / on the start
 ######################
+/results/*
 
 # Exception # Put ! on the start
 ######################
