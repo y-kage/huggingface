@@ -288,9 +288,14 @@ if __name__ == "__main__":
     # img_url = (
     #     "https://huggingface.co/ybelkada/segment-anything/resolve/main/assets/car.png"
     # )
-    # # img_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert("RGB")
-    # raw_image.save("../DATA/car.png")
+    # img_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    img_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting_examples/overture-creations-5sI6fQgYIuo.png"
+    raw_image = Image.open(requests.get(img_url, stream=True).raw).convert("RGB")
+    raw_image.save("../DATA/dog.png")
+
+    img_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting_examples/overture-creations-5sI6fQgYIuo_mask.png"
+    raw_image = Image.open(requests.get(img_url, stream=True).raw).convert("RGB")
+    raw_image.save("../DATA/dog_mask.png")
 
     parser = parser.parser()
     args = parser.parse_args()
@@ -302,7 +307,7 @@ if __name__ == "__main__":
     input_text = args.text_prompt
 
     if not image_path:
-        image_path = "../DATA/car.png"
+        image_path = "../DATA/dog.png"
     if not input_points:
         input_points = [[[850, 1100], [2250, 1000]]]
     if not input_boxes:

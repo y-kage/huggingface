@@ -10,12 +10,16 @@ def parser():
     parser.add_argument(
         "--mode",
         type=str,
-        default="default",
-        choices=["default", "custom"],
         help="Path to the image file.",
     )
     parser.add_argument(
         "--image_path",
+        type=str,
+        # default="../DATA/car.png",
+        help="Path to the image file.",
+    )
+    parser.add_argument(
+        "--mask_path",
         type=str,
         # default="../DATA/car.png",
         help="Path to the image file.",
