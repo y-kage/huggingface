@@ -32,7 +32,7 @@ scikit-learn
 timm
 # tensorboardX
 peft
-diffusers["torch"]
+diffusers[torch]
 transformers
 -f https://download.pytorch.org/whl/torch_stable.html
 torch==2.1.0+cu121
