@@ -19,9 +19,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     text = args.text_prompt
     save_path = args.save_path
-    if not args.text_prompt:
+    if not text:
         text = "An image of a squirrel in Picasso style"
-    if not args.save_path:
+    if not save_path:
         save_path = "../results"
 
     main(text, save_path)

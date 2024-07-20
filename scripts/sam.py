@@ -1,5 +1,6 @@
 import os
 import parser
+import sys
 
 import grounded_dino as bbox_detecter
 import matplotlib.pyplot as plt
@@ -299,6 +300,9 @@ if __name__ == "__main__":
 
     parser = parser.parser()
     args = parser.parse_args()
+    mode = args.mode
+    if not mode:
+        mode = "points"
     image_path = args.image_path
     result_image_path = args.save_path
     input_points = args.points_prompt
@@ -308,12 +312,6 @@ if __name__ == "__main__":
 
     if not image_path:
         image_path = "../DATA/dog.png"
-    if not input_points:
-        input_points = [[[850, 1100], [2250, 1000]]]
-    if not input_boxes:
-        input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
-    if not input_text:
-        input_text = "a cat. a remote control."
     if not args.save_path:
         result_image_path = "../results/sam.png"
 
@@ -322,63 +320,52 @@ if __name__ == "__main__":
     image_embeddings = model.get_image_embeddings(inputs["pixel_values"])
 
     prompt_image_path = "../results/prompt.png"
-    # result_image_path = "../results/segment.png"
 
-    # input_points = [[[550, 600], [2100, 1000]]]
-    # give_points(raw_image, input_points, result_image_path=result_image_path)
-    # print("~~~~~~~~~~~~")
-    # input_points = [[[450, 600]]]
-    # give_points(raw_image, input_points, result_image_path=result_image_path)
-
-    # """## 2 bbox
-    # input_boxes = [[[650, 900, 1000, 1250]]]
-    # give_boxes(raw_image, input_boxes, result_image_path=result_image_path)
-
-    # # """## 3 point & bbox
-    # input_boxes = [[[650, 900, 1000, 1250]]]
-    # input_points = [[[820, 1080]]]
-    # give_points_boxes(
-    #     raw_image, input_boxes, input_points, result_image_path=result_image_path
-    # )
-    # # print("~~~~~~~~~~~~")
-
-    # input_boxes = [[[620, 900, 1000, 1255]]]
-    # input_points = [[[820, 1080]]]
-    # labels = [[0]] # to ignore
-    # give_points_boxes(
-    #     raw_image,
-    #     input_boxes,
-    #     input_points,
-    #     labels,
-    #     result_image_path=result_image_path,
-    # )
-
-    # # """## 4 multiple
-    # input_points = [[[850, 1100], [2250, 1000]]]
-    # give_points(raw_image, input_points, result_image_path=result_image_path)
-
-    # """  ### 4.2
-    # input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
-    # show_boxes_on_image(raw_image, input_boxes[0], path=prompt_image_path)
-    # input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
-    # give_boxes(
-    #     raw_image,
-    #     input_boxes,
-    #     result_image_path=result_image_path,
-    #     prompt_image_path=prompt_image_path,
-    # )
-
-    # text = "door."
-    bbox = bbox_detecter.main(
-        image=raw_image, text=input_text, save_path="../results/sam_bbox_detect.png"
-    )
-    if len(bbox["labels"]) == 0:
-        print("No bbox")
-    else:
-        input_boxes = [bbox["boxes"].tolist()]
+    if mode == "points":
+        if not input_points:
+            input_points = [[[850, 1100], [2250, 1000]]]
+        give_points(
+            raw_image,
+            input_points,
+            labels=input_labels,
+            result_image_path=result_image_path,
+            prompt_image_path=prompt_image_path,
+        )
+    elif mode == "boxes":
+        if not input_boxes:
+            input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
         give_boxes(
             raw_image,
             input_boxes,
             result_image_path=result_image_path,
             prompt_image_path=prompt_image_path,
         )
+    elif mode == "points_boxes":
+        if not input_points:
+            input_points = [[[850, 1100], [2250, 1000]]]
+        if not input_boxes:
+            input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
+        give_points_boxes(
+            raw_image,
+            input_boxes,
+            input_points,
+            labels=input_labels,
+            result_image_path=result_image_path,
+            prompt_image_path=prompt_image_path,
+        )
+    elif mode == "grounded_dino":
+        if not input_text:
+            input_text = "a cat. a remote control."
+        bbox = bbox_detecter.main(
+            image=raw_image, text=input_text, save_path="../results/sam_bbox_detect.png"
+        )
+        if len(bbox["labels"]) == 0:
+            print("No bbox")
+        else:
+            input_boxes = [bbox["boxes"].tolist()]
+            give_boxes(
+                raw_image,
+                input_boxes,
+                result_image_path=result_image_path,
+                prompt_image_path=prompt_image_path,
+            )

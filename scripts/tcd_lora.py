@@ -1,5 +1,6 @@
 import os
 import parser
+import sys
 
 import torch
 from diffusers import AutoPipelineForInpainting, StableDiffusionXLPipeline, TCDScheduler
@@ -77,23 +78,26 @@ if __name__ == "__main__":
 
     parser = parser.parser()
     args = parser.parse_args()
+    mode = args.mode
+    if not mode:
+        mode = "text2image"
     text = args.text_prompt
     save_path = args.save_path
     image_path = args.image_path
     mask_path = args.mask_path
-    if not args.text_prompt:
+    if not text:
         # text = "Painting of the orange cat Otto von Garfield, Count of Bismarck-Schönhausen, Duke of Lauenburg, Minister-President of Prussia. Depicted wearing a Prussian Pickelhaube and eating his favorite meal - lasagna."
         text = "a frog sitting on a park bench"
-    if not args.save_path:
+    if not save_path:
         save_path = "../results"
-    if not args.image_path:
+    if not image_path:
         image_path = "../DATA/dog.png"
-    if not args.mask_path:
+    if not mask_path:
         mask_path = "../DATA/dog_mask.png"
 
-    if args.mode == "text2image":
+    if mode == "text2image":
         text_2_image(text, save_path)
-    elif args.mode == "inpainting":
+    elif mode == "inpainting":
         image = Image.open(image_path)
         mask = Image.open(mask_path)
         inpainting(image, mask, text, save_path)

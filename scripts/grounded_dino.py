@@ -56,12 +56,12 @@ if __name__ == "__main__":
     image_path = args.image_path
     text = args.text_prompt
     save_path = args.save_path
-    if not args.image_path:
+    if not image_path:
         image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
         image_path = requests.get(image_url, stream=True).raw
-    if not args.text_prompt:
+    if not text:
         text = "a cat. a remote control."
-    if not args.save_path:
+    if not save_path:
         save_path = "../results/grounded_dino.jpg"
 
     image = Image.open(image_path)

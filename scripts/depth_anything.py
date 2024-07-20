@@ -49,9 +49,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     image_path = args.image_path
     save_path = args.save_path
-    if not args.image_path:
+    if not image_path:
         image_path = "../DATA/cat.png"
-    if not args.save_path:
+    if not save_path:
         save_path = "../results/depth_anything.png"
 
     image = Image.open(image_path)

@@ -71,7 +71,7 @@ if __name__ == "__main__":
         image_path = "../DATA/bowl.png"
     if not input_text:
         input_text = ["a glass", "something to fill", "wood", "a jar"]
-    if not args.save_path:
+    if not save_path:
         save_path = "../results/clipseg.png"
     # print(args_dict)
     # if args.mode == "custom":

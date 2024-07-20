@@ -78,7 +78,7 @@ if __name__ == "__main__":
         image_path = "../DATA/cat.png"
     if not input_text:
         input_text = "What is in the image?"
-    if not args.save_path:
+    if not save_path:
         save_path = "../results/vilt.png"
 
     image = Image.open(image_path)
