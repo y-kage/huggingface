@@ -95,9 +95,9 @@ if __name__ == "__main__":
     if not mask_path:
         mask_path = "../DATA/dog_mask.png"
 
-    if mode == "text2image":
-        text_2_image(text, save_path)
-    elif mode == "inpainting":
+    if mode == "inpainting":
         image = Image.open(image_path)
         mask = Image.open(mask_path)
         inpainting(image, mask, text, save_path)
+    else:  # mode == "text2image":
+        text_2_image(text, save_path)

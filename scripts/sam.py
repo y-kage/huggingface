@@ -353,7 +353,8 @@ if __name__ == "__main__":
             result_image_path=result_image_path,
             prompt_image_path=prompt_image_path,
         )
-    elif mode == "grounded_dino":
+    else:
+        # elif mode == "grounded_dino":
         if not input_text:
             input_text = "a cat. a remote control."
         bbox = bbox_detecter.main(
