@@ -1,13 +1,16 @@
-import parser
-
 import numpy as np
 import requests
 import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForDepthEstimation
 
+try:
+    from . import global_parser
+except ImportError:
+    import global_parser
 
-def main(image, save_path):
+
+def main(image, save_flag=False, save_path="../results/depth_anything.png"):
 
     image_processor = AutoImageProcessor.from_pretrained(
         "LiheYoung/depth-anything-small-hf"
@@ -35,7 +38,8 @@ def main(image, save_path):
     output = prediction.squeeze().cpu().numpy()
     formatted = (output * 255 / np.max(output)).astype("uint8")
     depth = Image.fromarray(formatted)
-    depth.save(save_path)
+    if save_flag:
+        depth.save(save_path)
     return depth
 
 
@@ -45,8 +49,8 @@ if __name__ == "__main__":
     # image = Image.open(requests.get(url, stream=True).raw)
     # image.save("../DATA/cat.png")
 
-    parser = parser.parser()
-    args = parser.parse_args()
+    global_parser = global_parser.parser()
+    args = global_parser.parse_args()
     image_path = args.image_path
     save_path = args.save_path
     if not image_path:
@@ -55,4 +59,4 @@ if __name__ == "__main__":
         save_path = "../results/depth_anything.png"
 
     image = Image.open(image_path)
-    main(image, save_path=save_path)
+    main(image, save_flag=True, save_path=save_path)

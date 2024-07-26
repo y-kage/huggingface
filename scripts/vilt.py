@@ -1,8 +1,11 @@
-import parser
-
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from transformers import ViltForQuestionAnswering, ViltProcessor
+
+try:
+    from . import global_parser
+except ImportError:
+    import global_parser
 
 
 def add_white_margin(image, margin_height):
@@ -68,8 +71,8 @@ if __name__ == "__main__":
     # image = Image.open(requests.get(url, stream=True).raw)
     # image.save("../DATA/cat.png")
 
-    parser = parser.parser()
-    args = parser.parse_args()
+    global_parser = global_parser.parser()
+    args = global_parser.parse_args()
     image_path = args.image_path
     save_path = args.save_path
     input_text = args.text_prompt

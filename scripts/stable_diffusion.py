@@ -1,7 +1,11 @@
 import os
-import parser
 
 from diffusers import DiffusionPipeline
+
+try:
+    from . import global_parser
+except ImportError:
+    import global_parser
 
 
 def main(text, save_dir):
@@ -15,8 +19,8 @@ def main(text, save_dir):
 
 if __name__ == "__main__":
 
-    parser = parser.parser()
-    args = parser.parse_args()
+    global_parser = global_parser.parser()
+    args = global_parser.parse_args()
     text = args.text_prompt
     save_path = args.save_path
     if not text:

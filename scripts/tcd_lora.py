@@ -1,11 +1,15 @@
 import os
-import parser
 import sys
 
 import torch
 from diffusers import AutoPipelineForInpainting, StableDiffusionXLPipeline, TCDScheduler
 from diffusers.utils import load_image, make_image_grid
 from PIL import Image
+
+try:
+    from . import global_parser
+except ImportError:
+    import global_parser
 
 
 def text_2_image(text, save_dir):
@@ -76,8 +80,8 @@ if __name__ == "__main__":
     # init_image.save("../DATA/dog.png")
     # mask_image = load_image(mask_url).resize((1024, 1024))
 
-    parser = parser.parser()
-    args = parser.parse_args()
+    global_parser = global_parser.parser()
+    args = global_parser.parse_args()
     mode = args.mode
     if not mode:
         mode = "text2image"

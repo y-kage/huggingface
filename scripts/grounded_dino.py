@@ -1,4 +1,3 @@
-import parser
 import random
 
 import requests
@@ -6,8 +5,13 @@ import torch
 from PIL import Image, ImageDraw
 from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
+try:
+    from . import global_parser
+except ImportError:
+    import global_parser
 
-def main(image, text, save_path):
+
+def main(image, text, save_flag=False, save_path="../results/grounded_dino.jpg"):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model_id = "IDEA-Research/grounding-dino-tiny"
 
@@ -25,12 +29,12 @@ def main(image, text, save_path):
         text_threshold=0.3,
         target_sizes=[image.size[::-1]],
     )[0]
-    vis_bbox(image, results, save_path)
-    # print(results)
-    return results
+
+    result_img = vis_bbox(image, results, save_flag, save_path)
+    return results, result_img
 
 
-def vis_bbox(image, results, save_path):
+def vis_bbox(image, results, save_flag, save_path):
     if results:
         for i in range(results["scores"].shape[0]):
             _bbox = results["boxes"][i]
@@ -47,12 +51,15 @@ def vis_bbox(image, results, save_path):
             )
             draw.polygon(bbox, outline=color, width=2)
 
-        image.save(save_path)
+        if save_flag:
+            image.save(save_path)
+        return image
+    return None
 
 
 if __name__ == "__main__":
-    parser = parser.parser()
-    args = parser.parse_args()
+    global_parser = global_parser.parser()
+    args = global_parser.parse_args()
     image_path = args.image_path
     text = args.text_prompt
     save_path = args.save_path
@@ -65,4 +72,4 @@ if __name__ == "__main__":
         save_path = "../results/grounded_dino.jpg"
 
     image = Image.open(image_path)
-    main(image=image, text=text, save_path=save_path)
+    main(image=image, text=text, save_flag=True, save_path=save_path)
