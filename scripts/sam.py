@@ -162,11 +162,12 @@ def give_points(
         # print("aaaaaa")
         show_input_points = input_points
 
-    if not labels:
-        labels = []
-        for i in range(len(input_points[0])):
-            labels.append(1)
-        labels = [labels]
+    # if not labels:
+    #     labels = []
+    #     for i in range(len(input_points[0])):
+    #         labels.append(1)
+    #     labels = [labels]
+
     if len(input_points[0]) == 1:
         show_label = labels[0]
     else:
@@ -242,11 +243,11 @@ def give_points_boxes(
     else:
         show_input = input_boxes
 
-    if not labels:
-        labels = []
-        for i in range(len(input_points[0])):
-            labels.append(1)
-        labels = [labels]
+    # if not labels:
+    #     labels = []
+    #     for i in range(len(input_points[0])):
+    #         labels.append(1)
+    #     labels = [labels]
     if len(input_points[0]) == 1:
         show_label = labels[0]
     else:
@@ -329,9 +330,24 @@ def main(
     scores = None
     prompt_img = None
 
+    if not input_points:
+        input_points = [[850, 1100], [2250, 1000]]
+    if not input_boxes:
+        input_boxes = [[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]
+    if not input_text:
+        input_text = "a cat. a remote control."
+    if not input_labels:
+        input_labels = []
+        for i in range(len(input_points[0])):
+            input_labels.append(1)
+
+    input_points = [input_points]
+    input_boxes = [input_boxes]
+    input_labels = [input_labels]
+
     if mode == "points":
-        if not input_points:
-            input_points = [[[850, 1100], [2250, 1000]]]
+        # if not input_points:
+        #     input_points = [[[850, 1100], [2250, 1000]]]
         raw_image, masks, scores, prompt_img = give_points(
             raw_image,
             input_points,
@@ -342,16 +358,16 @@ def main(
             image_embeddings,
         )
     elif mode == "boxes":
-        if not input_boxes:
-            input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
+        # if not input_boxes:
+        #     input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
         raw_image, masks, scores, prompt_img = give_boxes(
             raw_image, input_boxes, device, model, processor, image_embeddings
         )
     elif mode == "points_boxes":
-        if not input_points:
-            input_points = [[[850, 1100], [2250, 1000]]]
-        if not input_boxes:
-            input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
+        # if not input_points:
+        #     input_points = [[[850, 1100], [2250, 1000]]]
+        # if not input_boxes:
+        #     input_boxes = [[[650, 900, 1000, 1250], [2050, 800, 2400, 1150]]]
         raw_image, masks, scores, prompt_img = give_points_boxes(
             raw_image,
             input_boxes,
@@ -364,8 +380,8 @@ def main(
         )
     # else:
     elif mode == "text":
-        if not input_text:
-            input_text = "a cat. a remote control."
+        # if not input_text:
+        #     input_text = "a cat. a remote control."
         bbox, bbox_img = bbox_detecter.main(
             image=raw_image, text=input_text, save_path="../results/sam_bbox_detect.png"
         )
